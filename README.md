@@ -12,7 +12,7 @@ Initial Commit
 - Menu shell built out, not functional yet.
 
 
-PowerShell Notebook - Notebook written in PowerShell Using WPF
+PowerShell Notebook - Notebook written in PowerShell Using WPF<br><br>
 Copyright (C) 2020 - Alan Newingham
 
 This program is free software: you can redistribute it and/or modify
