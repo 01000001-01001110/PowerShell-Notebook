@@ -1,0 +1,132 @@
+<#
+PowerShell Notebook
+By: Alan Newingham
+Date: 11/10/2020
+
+Initial Commit 
+- RichTextbox functioning correctly
+- Close WPF button working
+- Click and Drag window working
+- Minimize Window Working
+- Maximize Window Working
+- Snap Back on Maximize Window Working
+- Was not able to get transparancy mapped to slider.
+- Menu shell built out, not functional yet.
+
+
+PowerShell Notebook - Notebook written in PowerShell Using WPF
+Copyright (C) 2020 - Alan Newingham
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+#>
+
+
+
+
+Add-Type -AssemblyName PresentationCore, PresentationFramework
+$Xaml = @"
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="iNet's PowerShell Notebook" 
+        Height="600" 
+        Width="800"
+        WindowStyle="None"
+        FontFamily="Century Gothic"
+        FontSize="14"
+        Background="#FF323233"
+        Opacity="1"
+        AllowsTransparency="True">
+
+    <Grid>
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="25" Background="#FF68217A" >
+            <DockPanel Width="300" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+            <Menu Height="22" Name="Menu" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#FF1E1E1E" Foreground="#FFD100FF">
+                <Menu.BitmapEffect>
+                    <DropShadowBitmapEffect />
+                </Menu.BitmapEffect>
+                <MenuItem Background="#FF1E1E1E" Foreground="#FFD100FF" Header="_File">
+                    <MenuItem Background="#FF1E1E1E" Foreground="#FFD100FF" Header="_New" IsCheckable="true" />
+                    <MenuItem Background="#FF1E1E1E" Foreground="#FFD100FF" Header="_Open" IsCheckable="true" />
+                    <MenuItem Background="#FF1E1E1E" Foreground="#FFD100FF" Header="_Close" IsCheckable="true" />
+                    <MenuItem Background="#FF1E1E1E" Foreground="#FFD100FF" Header="_Save" IsCheckable="true" />
+                </MenuItem>
+                <MenuItem Background="#FF1E1E1E" Foreground="#FFD100FF" Header="_Edit">
+                    <MenuItem Background="#FF1E1E1E" Foreground="#FFD100FF" Header="_Font" IsCheckable="true" />
+                    <MenuItem Background="#FF1E1E1E" Foreground="#FFD100FF" Header="_Find" IsCheckable="true" />
+                    <MenuItem Background="#FF1E1E1E" Foreground="#FFD100FF" Header="_Replace" IsCheckable="true" />
+                </MenuItem>
+                <MenuItem Background="#FF1E1E1E" Foreground="#FFD100FF" Header="_Options">
+                    <MenuItem Background="#FF1E1E1E" Foreground="#FFD100FF" Header="_Options" IsCheckable="true" />
+                </MenuItem>
+                <MenuItem Background="#FF1E1E1E" Foreground="#FFD100FF" Header="_Themes">
+                    <MenuItem Background="#FF1E1E1E" Foreground="#FFD100FF" Header="_Theme Selection" IsCheckable="true" />
+                </MenuItem>
+            </Menu>
+        </Grid>
+        <RichTextBox Margin="0,25" AcceptsReturn="True" AcceptsTab="True" AllowDrop="True" Name="tx_bx" FontFamily="Consolas" FontStyle="Normal" Background="#FF1E1E1E" Foreground="Azure" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" SpellCheck.IsEnabled="True"/>
+        <Grid Background="#FF68217A" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="24">
+            <TextBlock Text="Created By Alan Newingham" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+            <Button Foreground="#FFD100FF" ToolTip="Close Window" Height="20" Width="20" Content="X" Name="close_btn" FontSize="14" HorizontalAlignment="Left" Background="Transparent" VerticalAlignment="Center" FontFamily="Consolas" Margin="3,0,0,0"/>
+            <Button Foreground="#FFD100FF" ToolTip="Maximize Window" Height="20" Width="20" Content="#" Name="maximize_btn" FontSize="14" HorizontalAlignment="Left" Background="Transparent" VerticalAlignment="Center" FontFamily="Consolas" Margin="25,0,0,0"/>
+            <Button Foreground="#FFD100FF" ToolTip="Minimize" Height="20" Width="20" Content="-" Name="minimize_btn" FontSize="14" HorizontalAlignment="Left" Background="Transparent" VerticalAlignment="Center" FontFamily="Consolas" Margin="47,0,0,0"/>
+        </Grid>
+    </Grid>
+</Window>
+"@
+#-------------------------------------------------------------#
+#----Control Event Handlers-----------------------------------#
+#-------------------------------------------------------------#
+
+
+
+#>
+#-------------------------------------------------------------#
+#----Script Execution-----------------------------------------#
+#-------------------------------------------------------------#
+
+$Window = [Windows.Markup.XamlReader]::Parse($Xaml)
+
+[xml]$xml = $Xaml
+
+$xml.SelectNodes("//*[@Name]") | ForEach-Object { Set-Variable -Name $_.Name -Value $Window.FindName($_.Name) }
+
+$Window.Add_MouseLeftButtonDown({
+    $Window.DragMove()
+})
+
+
+$close_btn.add_Click({
+    $Window.Close();
+})
+
+$minimize_btn.Add_Click({
+    $Window.WindowState = 'Minimized'
+})
+
+$maximize_btn.Add_Click({
+    If ($Window.WindowState -eq 'Normal') {
+        #Maximize the window
+        $Window.WindowState = 'Maximized'
+    } Else {
+        #Put window back to its normal size if maximized already
+        $Window.WindowState = 'Normal'
+    }
+})
+
+
+$Window.ShowDialog()
+
+
+
