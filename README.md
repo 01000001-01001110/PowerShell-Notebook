@@ -1,4 +1,4 @@
-# PowerShell Notebook - Notebook written in PowerShell Using WPF<br><br>
+# Written in PowerShell & Using WPF<br>
 
 Initial Commit 
 - RichTextbox functioning correctly
