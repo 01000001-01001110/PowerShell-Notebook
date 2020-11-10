@@ -1,5 +1,8 @@
 # Written in PowerShell & Using WPF<br>
 
+![image](https://user-images.githubusercontent.com/48245017/98719559-e83a5600-235d-11eb-8ad0-ce287e0d6b6a.png)
+
+
 Initial Commit 
 - RichTextbox functioning correctly
 - Close WPF button working
